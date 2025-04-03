@@ -1,8 +1,8 @@
-Flask==2.0.1
+CopyFlask==2.0.1
 Pillow==9.0.1
 gunicorn==20.1.0
-numpy>=1.19.3
+numpy>=1.22.0
 torch>=1.7.0
 torchvision>=0.8.1
-opencv-python-headless>=4.5.1
+opencv-python-headless>=4.6.0
 easyocr==1.6.2
