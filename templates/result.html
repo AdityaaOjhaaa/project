@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextExtract | OCR Result</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>{% if success %}Text Extracted!{% else %}Processing Error{% endif %} 
+            <i class="fas fa-{% if success %}check-circle{% else %}exclamation-circle{% endif %}" 
+               style="color: {% if success %}#28a745{% else %}#dc3545{% endif %};">
+            </i>
+        </h1>
+        <p class="subtitle">
+            {% if success %}
+                Here is the text extracted from your image
+            {% else %}
+                We encountered an issue while processing your image
+            {% endif %}
+        </p>
+        
+        <div class="result-container">
+            <h3><i class="fas fa-file-alt"></i> Extracted Content</h3>
+            <div class="result-box" id="extracted-text">
+                {{ text }}
+            </div>
+            <button id="copy-btn" class="btn" style="margin-top: 15px;">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="/" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Try Another Image
+            </a>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            const textElement = document.getElementById('extracted-text');
+            const textToCopy = textElement.innerText;
+            
+            // Create a temporary textarea element to copy from
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            
+            // Select and copy the text
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Remove the temporary element
+            document.body.removeChild(textarea);
+            
+            // Update button text temporarily
+            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy"></i> Copy Text';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
