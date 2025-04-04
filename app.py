@@ -43,16 +43,15 @@ def home():
 def upload_file():
     if 'file' not in request.files:
         return render_template('index.html', error='No file uploaded!')
-
     file = request.files['file']
     if file.filename == '':
         return render_template('index.html', error='No selected file!')
-
+    
     # Generate a unique filename to prevent overwriting
     unique_filename = str(uuid.uuid4()) + os.path.splitext(file.filename)[1]
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
     file.save(file_path)
-
+    
     try:
         # Perform OCR
         raw_text = extract_text(file_path)
@@ -61,13 +60,18 @@ def upload_file():
     except Exception as e:
         cleaned_text = f"Error processing image: {str(e)}"
         success = False
-
+    
     return render_template('result.html', text=cleaned_text, success=success)
 
 # Error handling
 @app.errorhandler(413)
 def request_entity_too_large(error):
     return render_template('index.html', error='The image you tried to upload is too large.')
+
+# Add a simple health check endpoint
+@app.route('/health')
+def health_check():
+    return "OK", 200
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
